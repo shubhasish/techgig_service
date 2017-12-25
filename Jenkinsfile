@@ -7,6 +7,7 @@ stages {
 
         steps {
             script{
+            sh 'echo ${env.BRANCH_NAME}'
             sh 'whoami'
             sh 'docker build -t test .'
             }
@@ -17,6 +18,7 @@ stages {
 
         steps {
           script{
+
           sh "docker run -d --name hello_world -p 5000:5000 test"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
@@ -31,7 +33,9 @@ stages {
 
  }
  stage ('Push'){
-
+        when {
+          branch 'master'
+        }
         steps {
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
