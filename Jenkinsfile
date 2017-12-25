@@ -6,7 +6,9 @@ stages {
  stage ('Build'){
 
         steps {
+            script{
             def app = docker.build('test_image')
+            }
         }
 
  }
