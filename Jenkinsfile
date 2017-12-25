@@ -33,7 +33,7 @@ stages {
  stage ('Push'){
 
         steps {
-          withDockerRegistry([credentialsId: 'dockerhub_id', url:'https://registry.hub.docker.com']){
+          withRegistry([credentialsId: 'dockerhub_id', url:'https://registry.hub.docker.com']){
           sh "docker push shubhashish/codegladiator:latest"
 
           }
