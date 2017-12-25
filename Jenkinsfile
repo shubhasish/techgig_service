@@ -5,7 +5,7 @@ agent any
 stages {
  stage ('Build'){
         steps {
-           app = docker.build('test_image')
+           docker.build('test_image')
         }
 
  }
