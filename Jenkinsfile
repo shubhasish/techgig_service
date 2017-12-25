@@ -33,7 +33,9 @@ stages {
  stage ('Push'){
 
         steps {
-          withRegistry([credentialsId: 'dockerhub_id', url:'https://registry.hub.docker.com']){
+          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
+usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
+          sh "echo $USERNAME"
           sh "docker push shubhashish/codegladiator:latest"
 
           }
