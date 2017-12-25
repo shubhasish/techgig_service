@@ -22,6 +22,7 @@ stages {
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
           sh "docker stop hello_world"
           sh "docker rm hello_world"
+          sh "docker tag test shubhashish/codegladiator:latest"
 
           }
 
@@ -32,7 +33,10 @@ stages {
  stage ('Push'){
 
         steps {
-          echo "Docker Push"
+          withDockerRegistry([credentialsId: 'dockerhub_id', url:'https://registry.hub.docker.com']){
+          sh "docker push shubhashish/codegladiator:latest"
+          }
+          }
         }
 
  }
