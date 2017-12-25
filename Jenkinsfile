@@ -35,7 +35,7 @@ stages {
         steps {
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "echo $USERNAME"
+          sh "docker login -u $USERNAME -p $PASSWORD"
           sh "docker push shubhashish/codegladiator:latest"
 
           }
