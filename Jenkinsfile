@@ -7,6 +7,7 @@ stages {
 
         steps {
             script{
+            sh 'whoami'
             sh 'docker build -t test .'
             }
         }
