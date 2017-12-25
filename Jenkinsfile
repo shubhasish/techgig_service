@@ -35,7 +35,7 @@ stages {
         steps {
           withDockerRegistry([credentialsId: 'dockerhub_id', url:'https://registry.hub.docker.com']){
           sh "docker push shubhashish/codegladiator:latest"
-          }
+
           }
         }
 
