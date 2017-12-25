@@ -18,7 +18,9 @@ stages {
         steps {
           script{
           sh "docker run -d --name hello_world -p 5000:5000 test"
+          sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
+          sh "docker stop hello_world"
           sh "docker rm hello_world"
 
           }
