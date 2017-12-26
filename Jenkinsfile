@@ -7,7 +7,7 @@ stages {
 
         steps {
             script{
-            sh 'echo ${env.BRANCH_NAME}'
+            sh "echo ${env.BRANCH_NAME}"
             sh 'whoami'
             sh 'docker build -t test .'
             }
