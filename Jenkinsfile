@@ -50,9 +50,15 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
  }
 
 stage ('Deploy') {
+        agent {
+          dockerfile{
+            filename 'Dockerfile'
+            dir 'deployment'
 
+          }
+        }
         steps {
-            echo "Deploy"
+            sh "python deployment/deployer.py"
 
         }
 
