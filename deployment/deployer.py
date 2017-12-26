@@ -167,3 +167,5 @@ if os.path.isfile("deployment.yaml"):
             print "Check you stack.Stack Id: %s" % create_result[1]['StackId']
         else:
             print create_result[1]
+else:
+    print "No file found"
