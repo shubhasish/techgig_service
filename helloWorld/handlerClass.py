@@ -9,3 +9,6 @@ class HelloWorld(Resource):
 
 
 
+class HealthCheck(Resource):
+    def get(self):
+        return "O.K"

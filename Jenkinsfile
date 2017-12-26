@@ -22,6 +22,8 @@ stages {
           sh "docker run -d --name hello_world -p 5000:5000 test"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
+          sh "sleep 1"
+          sh "curl -X GET http://localhost:5000/techgig/healthCheck"
           sh "docker stop hello_world"
           sh "docker rm hello_world"
           sh "docker tag test shubhashish/codegladiator:latest"
