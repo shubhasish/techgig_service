@@ -62,7 +62,7 @@ Resources:
                 - Name:
                     Ref: Application
                   Essential: true
-                  Image: shubhashish/codegladiator
+                  Image: shubhashish/codegladiator:latest
                   MemoryReservation: 512
                   Memory: 1024
                   Cpu: 0

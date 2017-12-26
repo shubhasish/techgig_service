@@ -20,7 +20,8 @@ def print_deployment(env,service_name,version,memoryconfig,cpuconfig):
 
 
 def uploadFile(client):
-    file_list = set(os.listdir('.'))
+    file_list = set(os.listdir(os.path.dirname(os.path.abspath(__file__))))
+
     file_list.remove(os.path.basename(__file__))
     for file in file_list:
         upload_result = client.s3Upload(file)
@@ -51,7 +52,8 @@ class client:
             return e.message
     def s3Upload(self,file):
         try:
-            self.client.upload_file(Bucket=s3_bucket,Filename=file,Key=(bucket_path+file))
+            file_path = os.path.dirname(os.path.abspath(__file__)) + '/' + file
+            self.client.upload_file(Bucket=s3_bucket,Filename=file_path,Key=(bucket_path+file))
             return True
         except Exception as e:
             return e.message
@@ -89,13 +91,13 @@ for x in range(1,len(arguments)):
     dict[arg[0]] = arg[1]
 
 print "\nStarting Application deployemnt to %s\n"%dict['env']
-print "Searching for 'deployment.yaml' in your current folder."
-
-if os.path.isfile("deployment.yaml"):
+print "Searching for 'deployment.yaml' in your deployment folder."
+deployment_file = os.path.dirname(os.path.abspath(__file__)) + "/deployment.yaml"
+if os.path.isfile(deployment_file):
 
     print "deployment.yaml found !!!\n"
 
-    stream = open("deployment.yaml","r+")
+    stream = open(deployment_file,"r+")
     yaml = yaml.safe_load(stream)
 
     service_name = yaml['Parameters']['Application']['Default']
@@ -159,6 +161,7 @@ if os.path.isfile("deployment.yaml"):
 
         else:
             print update_result[1]
+            os._exit(1)
     elif getStack==False:
         print "Deploying your Application\n"
         create_result = cloudformation_client.create_stack(stack_name)
@@ -167,6 +170,7 @@ if os.path.isfile("deployment.yaml"):
             print "Check you stack.Stack Id: %s" % create_result[1]['StackId']
         else:
             print create_result[1]
+            os._exit(1)
 else:
     print "No file found"
     os._exit(1)
