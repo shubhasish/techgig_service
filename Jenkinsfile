@@ -60,7 +60,7 @@ stage ('Deploy') {
         steps {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "python deployment/deployer.py env=dev access_id=$USERNAME access_key=$PASSWORD"
+          sh "python deployment/deployer.py env=dev access_id=$USERNAME access_key=$PASSWORD region=us-east-1"
 
           }
 

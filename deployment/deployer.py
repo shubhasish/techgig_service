@@ -31,8 +31,8 @@ def uploadFile(client):
             print upload_result
             os._exit(1)
 class client:
-    def __init__(self,type,access_id,access_key):
-        self.client = boto3.client(type,aws_access_key_id=access_id,aws_secret_access_key=access_key)
+    def __init__(self,type,access_id,access_key,region):
+        self.client = boto3.client(type,aws_access_key_id=access_id,aws_secret_access_key=access_key,region_name=region)
 
     def check_s3(self,path):
         try:
@@ -122,7 +122,7 @@ if os.path.isfile(deployment_file):
     parameters = [{'ParameterKey':'Cluster','ParameterValue':dict['env']}]
 
 ########################
-    s3_client = client('s3',access_id=dict['access_id'],access_key=dict['access_key'])
+    s3_client = client('s3',access_id=dict['access_id'],access_key=dict['access_key'],region=dict['region'])
     print "Checking your deployment folder in s3 bucket %s\n"%s3_bucket
     check_result = s3_client.check_s3(bucket_path)
 
@@ -148,7 +148,7 @@ if os.path.isfile(deployment_file):
         os._exit(1)
 
 
-    cloudformation_client = client('cloudformation',access_id=dict['access_id'],access_key=dict['access_key'])
+    cloudformation_client = client('cloudformation',access_id=dict['access_id'],access_key=dict['access_key'],region=dict['region'])
 
     getStack = cloudformation_client.doesStackExist(stack_name)
 
