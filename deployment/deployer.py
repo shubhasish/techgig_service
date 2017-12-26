@@ -169,3 +169,4 @@ if os.path.isfile("deployment.yaml"):
             print create_result[1]
 else:
     print "No file found"
+    os._exit(1)
