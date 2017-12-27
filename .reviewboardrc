@@ -1,2 +1,2 @@
 REVIEWBOARD_URL="http://localhost:8000/"
-REPOSITORY="master"
+REPOSITORY="techgig_service"
