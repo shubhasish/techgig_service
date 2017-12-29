@@ -42,6 +42,7 @@ stages {
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
           sh "docker login -u $USERNAME -p $PASSWORD"
           sh "docker push shubhashish/codegladiator:latest"
+          sh "docker push shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
         }
