@@ -21,7 +21,7 @@ Parameters:
     Listener:
         Description: The Application Load Balancer listener to register with
         Type: String
-        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/dev/1cb70a371dd1d585/364a21305cd5747a"
+        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/dev/05da18d92ee2db17/fa3cde433d19857a"
 
     Application:
         Description: Name of the application
