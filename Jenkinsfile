@@ -7,9 +7,7 @@ stages {
 
         steps {
             script{
-            sh "echo ${env.BRANCH_NAME}"
-            sh 'whoami'
-            sh 'docker build -t test .'
+            sh 'docker build -t hellowolrd .'
             }
         }
 
@@ -26,7 +24,8 @@ stages {
           sh "curl -X GET http://localhost:5000/techgig/healthCheck"
           sh "docker stop hello_world"
           sh "docker rm hello_world"
-          sh "docker tag test shubhashish/codegladiator:latest"
+          sh "docker tag helloworld shubhashish/codegladiator:latest"
+          sh "docker tag helloworld shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
 
@@ -35,9 +34,7 @@ stages {
 
  }
  stage ('Push'){
-        when {
-          branch 'master'
-        }
+
         steps {
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
@@ -66,6 +63,19 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
 
 
         }
+
+}
+
+stage ('Cleanup') {
+    steps{
+        script{
+        sh "docker rmi shubhashish/codegladiator:latest"
+        sh "docker rmi shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
+        sh "docker rmi helloworld"
+
+        }
+
+    }
 
 }
 
