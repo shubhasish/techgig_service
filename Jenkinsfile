@@ -8,7 +8,7 @@ stages {
         steps {
             script{
 
-            sh 'docker build -t hellowolrd .'
+            sh 'docker build -t helloworld .'
 
             }
         }
