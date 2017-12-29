@@ -5,7 +5,7 @@ from flask_restful import Resource
 class HelloWorld(Resource):
 
     def get(self):
-        return flask.jsonify({"Success": "true", "Message": "Hello World, I will test an auto-deployment."})
+        return flask.jsonify({"Success": "true", "Message": "Hello World, we are testing a blue-green deployment."})
 
 
 
