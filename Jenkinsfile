@@ -63,7 +63,7 @@ stage ('Deploy') {
             script{
               if (env.BRANCH_NAME == 'master') {
                                                     environment{
-                                                    DEPLOY_TO = "staging"
+                                                    DEPLOY_TO = "production"
                                                     }
                                             } else {
                                                     DEPLOY_TO = "${env.BRANCH_NAME}"
