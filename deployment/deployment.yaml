@@ -88,7 +88,8 @@ Resources:
         Type: "AWS::Logs::LogGroup"
         Properties:
             RetentionInDays: 1
-            LogGroupName: "ECS"
+            LogGroupName:
+                Fn::Sub: "ECS-${Cluster}"
 
     TargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
