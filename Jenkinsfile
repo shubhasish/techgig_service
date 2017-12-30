@@ -50,10 +50,7 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
  }
 
 stage ('Deploy') {
-        when {
-          branch
 
-        }
 
         agent {
           dockerfile{
