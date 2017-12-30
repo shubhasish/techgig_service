@@ -6,7 +6,7 @@ Parameters:
     VPC:
         Description: The VPC that the ECS cluster is deployed to
         Type: AWS::EC2::VPC::Id
-        Default: "vpc-4c604634"
+        Default: "vpc-1c664064"
         
     Cluster:
         Description: Please provide the ECS Cluster ID that this service should run on
@@ -21,7 +21,7 @@ Parameters:
     Listener:
         Description: The Application Load Balancer listener to register with
         Type: String
-        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/dev/bb042e1c218c81f4/705cf454c15e3905"
+        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/staging/10eb6df9e460abd0/6658634353a2881e"
 
     Application:
         Description: Name of the application
