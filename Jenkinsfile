@@ -74,7 +74,7 @@ stage ('Deploy') {
 
             }
 
-            echo ${env.DEPLOY_TO}
+            sh echo ""${env.DEPLOY_TO}""
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
           sh "python deployment/deployer.py env=dev access_id=$USERNAME access_key=$PASSWORD region=us-east-1 version=${env.BRANCH_NAME}-${env.BUILD_ID}"
