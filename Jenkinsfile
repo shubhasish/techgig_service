@@ -8,7 +8,7 @@ stages {
         steps {
             script{
 
-            sh 'docker build -t helloworld:${env.BRANCH_NAME} .'
+            sh "docker build -t helloworld:${env.BRANCH_NAME} ."
 
             }
         }
