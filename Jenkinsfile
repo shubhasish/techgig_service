@@ -19,13 +19,13 @@ stages {
         steps {
           script{
 
-          sh "docker run -d --name hello_world -p 5000:5000 helloworld:${env.BRANCH_NAME}"
+          sh "docker run -d --name hello_world_${env.BRANCH_NAME} -p 5000:5000 helloworld:${env.BRANCH_NAME}"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
           sh "sleep 1"
           sh "curl -X GET http://localhost:5000/techgig/healthCheck"
-          sh "docker stop hello_world"
-          sh "docker rm hello_world"
+          sh "docker stop hello_world_${env.BRANCH_NAME}"
+          sh "docker rm hello_world_${env.BRANCH_NAME}"
           sh "docker tag helloworld:${env.BRANCH_NAME} shubhashish/codegladiator:latest"
           sh "docker tag helloworld:${env.BRANCH_NAME} shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
 
