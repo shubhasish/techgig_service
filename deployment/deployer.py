@@ -119,7 +119,7 @@ if os.path.isfile(deployment_file):
 #########
     deployment_path = "https://s3.amazonaws.com/%s/deployment/%s/%s/deployment.yaml"%(s3_bucket,dict['env'],service_name)
 ############################
-    parameters = [{'ParameterKey':'Cluster','ParameterValue':dict['env']}]
+    parameters = [{'ParameterKey':'Cluster','ParameterValue':dict['env']},{'ParameterKey':'Version','ParameterValue':dict['version']}]
 
 ########################
     s3_client = client('s3',access_id=dict['access_id'],access_key=dict['access_key'],region=dict['region'])

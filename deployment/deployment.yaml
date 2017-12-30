@@ -6,7 +6,7 @@ Parameters:
     VPC:
         Description: The VPC that the ECS cluster is deployed to
         Type: AWS::EC2::VPC::Id
-        Default: "vpc-43431a3b"
+        Default: "vpc-4c604634"
         
     Cluster:
         Description: Please provide the ECS Cluster ID that this service should run on
@@ -21,12 +21,16 @@ Parameters:
     Listener:
         Description: The Application Load Balancer listener to register with
         Type: String
-        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/dev/1cb70a371dd1d585/364a21305cd5747a"
+        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/dev/bb042e1c218c81f4/705cf454c15e3905"
 
     Application:
-        Description: The path to register with the Application Load Balancer
+        Description: Name of the application
         Type: String
         Default: "helloWorld"
+    Version:
+        Description: Name of the image
+        Type: String
+        Default: "latest"
 
 
 Resources:
@@ -62,7 +66,8 @@ Resources:
                 - Name:
                     Ref: Application
                   Essential: true
-                  Image: shubhashish/codegladiator
+                  Image:
+                    Fn::Sub: "shubhashish/codegladiator:${Version}"
                   MemoryReservation: 512
                   Memory: 1024
                   Cpu: 0
