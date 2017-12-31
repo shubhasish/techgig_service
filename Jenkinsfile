@@ -9,7 +9,7 @@ stages {
             script{
             def full_name=env.JOB_NAME.split('/')
             def job_name=full_name[0]
-            sh "docker build -t ${job_name} ."
+            sh "docker build -t ${job_name}:${env.BRANCH_NAME} ."
 
             }
         }
