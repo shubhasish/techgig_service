@@ -50,8 +50,9 @@ stages {
              script{
                      def ful_name = env.JOB_NAME.split('/')
                      def job_name = full_name[0]
-
+                     sh "echo {full_name}"
                      withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
+                     sh "echo {full_name}"
                      sh "docker login -u $USERNAME -p $PASSWORD"
                      sh "docker push shubhashish/${job_name}:latest"
                      sh "docker push shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
