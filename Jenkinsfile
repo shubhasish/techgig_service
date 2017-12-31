@@ -81,13 +81,13 @@ stage ('Deploy') {
             script{
             def deploy_to
 
-            if ( ${env.BRANCH_NAME} == 'master'){
+            if (env.BRANCH_NAME == 'master'){
                 deploy_to = "production"
             }else {
-
+                sh "echo hello"
                 deploy_to = "${env.BRANCH_NAME}"
             }
-            sh "echo {deploy_to}"
+
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
              sh "python deployment/deployer.py env=${deploy_to} access_id=$USERNAME access_key=$PASSWORD region=us-east-1 version=${env.BRANCH_NAME}-${env.BUILD_ID}"
 
