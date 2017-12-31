@@ -80,6 +80,7 @@ stage ('Deploy') {
         steps {
             script{
             def deploy_to
+            sh echo "hello"
             if ( env.BRANCH_NAME == 'master'){
                 deploy_to = "production"
             }else {
