@@ -7,14 +7,14 @@ stages {
 
         steps {
             script{
-
+            sh "echo ${env.JOB_NAME}"
             sh "docker build -t helloworld:${env.BRANCH_NAME} ."
 
             }
         }
 
  }
- stage ('Image Test') {
+ stage ('Testing') {
 
         steps {
           script{
@@ -36,7 +36,13 @@ stages {
 
  }
  stage ('Push'){
-
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
         steps {
           withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
@@ -50,7 +56,13 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
  }
 
 stage ('Deploy') {
-
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
 
         agent {
           dockerfile{
