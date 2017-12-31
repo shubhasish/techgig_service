@@ -7,27 +7,30 @@ stages {
 
         steps {
             script{
-
-            sh "docker build -t helloworld:${env.BRANCH_NAME} ."
+            def full_name=env.JOB_NAME.split('/')
+            def job_name=full_name[0]
+            sh "docker build -t ${job_name}:${env.BRANCH_NAME} ."
 
             }
         }
 
  }
- stage ('Image Test') {
+ stage ('Testing') {
 
         steps {
           script{
 
-          sh "docker run -d --name hello_world_${env.BRANCH_NAME} -p 5000:5000 helloworld:${env.BRANCH_NAME}"
+          def full_name = env.JOB_NAME.split('/')
+          def job_name = full_name[0]
+          sh "docker run -d --name ${job_name}_${env.BRANCH_NAME} -p 5000:5000 ${job_name}:${env.BRANCH_NAME}"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
           sh "sleep 1"
           sh "curl -X GET http://localhost:5000/techgig/healthCheck"
-          sh "docker stop hello_world_${env.BRANCH_NAME}"
-          sh "docker rm hello_world_${env.BRANCH_NAME}"
-          sh "docker tag helloworld:${env.BRANCH_NAME} shubhashish/codegladiator:latest"
-          sh "docker tag helloworld:${env.BRANCH_NAME} shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
+          sh "docker stop ${job_name}_${env.BRANCH_NAME}"
+          sh "docker rm ${job_name}_${env.BRANCH_NAME}"
+          sh "docker tag ${job_name}:${env.BRANCH_NAME} shubhashish/${job_name}:latest"
+          sh "docker tag ${job_name}:${env.BRANCH_NAME} shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
 
@@ -36,21 +39,36 @@ stages {
 
  }
  stage ('Push'){
-
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
         steps {
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
-usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "docker login -u $USERNAME -p $PASSWORD"
-          sh "docker push shubhashish/codegladiator:latest"
-          sh "docker push shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
+             script{
+                     def full_name = env.JOB_NAME.split('/')
+                     def job_name = full_name[0]
+                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
 
+                     sh "docker login -u $USERNAME -p $PASSWORD"
+                     sh "docker push shubhashish/${job_name}:latest"
+                     sh "docker push shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
+}
           }
         }
 
  }
 
 stage ('Deploy') {
-
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
 
         agent {
           dockerfile{
@@ -61,25 +79,21 @@ stage ('Deploy') {
         }
         steps {
             script{
-              if (env.BRANCH_NAME == 'master') {
-                                                    environment{
-                                                    DEPLOY_TO = "production"
-                                                    }
-                                            } else {
-                                                    DEPLOY_TO = "${env.BRANCH_NAME}"
-                                            }
+            def deploy_to
 
-
+            if (env.BRANCH_NAME == 'master'){
+                deploy_to = "production"
+            }else {
+                sh "echo hello"
+                deploy_to = "${env.BRANCH_NAME}"
             }
 
-
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id',
-usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "python deployment/deployer.py env=${env.BRANCH_NAME} access_id=$USERNAME access_key=$PASSWORD region=us-east-1 version=${env.BRANCH_NAME}-${env.BUILD_ID}"
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
+             sh "python deployment/deployer.py env=${deploy_to} access_id=$USERNAME access_key=$PASSWORD region=us-east-1 version=${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
 
-
+}
         }
 
 }
@@ -87,9 +101,12 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
 stage ('Cleanup') {
     steps{
         script{
-        sh "docker rmi shubhashish/codegladiator:latest"
-        sh "docker rmi shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
-        sh "docker rmi helloworld:${env.BRANCH_NAME}"
+        def full_name = env.JOB_NAME.split('/')
+        def job_name = full_name[0]
+
+        sh "docker rmi shubhashish/${job_name}:latest"
+        sh "docker rmi shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
+        sh "docker rmi ${job_name}:${env.BRANCH_NAME}"
 
         }
 
