@@ -7,12 +7,10 @@ stages {
 
         steps {
             script{
-            environment {
+            def full_name=env.JOB_NAME.split('/')
+            def job_name=full_name[0]
 
-            HELLO = "WORLD"
-            }
-            sh "echo ${env.JOB_NAME}"
-
+            sh "docker build -t ${job_name} ."
 
             }
         }
