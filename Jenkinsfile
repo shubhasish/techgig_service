@@ -7,6 +7,10 @@ stages {
 
         steps {
             script{
+            environment {
+
+            HELLO = "WORLD"
+            }
             sh "echo ${env.JOB_NAME}"
             sh "docker build -t helloworld:${env.BRANCH_NAME} ."
 
@@ -18,7 +22,7 @@ stages {
 
         steps {
           script{
-
+          sh "echo ${env.HELLO}"
           sh "docker run -d --name hello_world_${env.BRANCH_NAME} -p 5000:5000 helloworld:${env.BRANCH_NAME}"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
