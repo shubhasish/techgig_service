@@ -20,7 +20,7 @@ stages {
         steps {
           script{
 
-          def full_name = env.JOB_NAME.split('/'}
+          def full_name = env.JOB_NAME.split('/')
           def job_name = full_name[0]
           sh "docker run -d --name ${job_name}_${env.BRANCH_NAME} -p 5000:5000 ${job_name}:${env.BRANCH_NAME}"
           sh "sleep 2"
