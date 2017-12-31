@@ -7,25 +7,30 @@ stages {
 
         steps {
             script{
-            sh 'docker build -t hellowolrd .'
+            def full_name=env.JOB_NAME.split('/')
+            def job_name=full_name[0]
+            sh "docker build -t ${job_name}:${env.BRANCH_NAME} ."
+
             }
         }
 
  }
- stage ('Image Test') {
+ stage ('Testing') {
 
         steps {
           script{
 
-          sh "docker run -d --name hello_world -p 5000:5000 test"
+          def full_name = env.JOB_NAME.split('/')
+          def job_name = full_name[0]
+          sh "docker run -d --name ${job_name}_${env.BRANCH_NAME} -p 5000:5000 ${job_name}:${env.BRANCH_NAME}"
           sh "sleep 2"
           sh "curl -X GET http://localhost:5000/techgig/api/hello"
           sh "sleep 1"
           sh "curl -X GET http://localhost:5000/techgig/healthCheck"
-          sh "docker stop hello_world"
-          sh "docker rm hello_world"
-          sh "docker tag helloworld shubhashish/codegladiator:latest"
-          sh "docker tag helloworld shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
+          sh "docker stop ${job_name}_${env.BRANCH_NAME}"
+          sh "docker rm ${job_name}_${env.BRANCH_NAME}"
+          sh "docker tag ${job_name}:${env.BRANCH_NAME} shubhashish/${job_name}:latest"
+          sh "docker tag ${job_name}:${env.BRANCH_NAME} shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
 
@@ -34,19 +39,37 @@ stages {
 
  }
  stage ('Push'){
-
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
         steps {
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',
-usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "docker login -u $USERNAME -p $PASSWORD"
-          sh "docker push shubhashish/codegladiator:latest"
+             script{
+                     def full_name = env.JOB_NAME.split('/')
+                     def job_name = full_name[0]
+                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub_id',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
 
+                     sh "docker login -u $USERNAME -p $PASSWORD"
+                     sh "docker push shubhashish/${job_name}:latest"
+                     sh "docker push shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
+}
           }
         }
 
  }
 
 stage ('Deploy') {
+        when {
+            anyOf{
+                branch 'dev'
+                branch 'staging'
+                branch 'master'
+             }
+        }
+
         agent {
           dockerfile{
             filename 'Dockerfile'
@@ -55,13 +78,14 @@ stage ('Deploy') {
           }
         }
         steps {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id',
-usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
-          sh "python deployment/deployer.py env=dev access_id=$USERNAME access_key=$PASSWORD region=us-east-1"
+            script{
+
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
+             sh "python deployment/deployer.py env=${env.BRANCH_NAME} access_id=$USERNAME access_key=$PASSWORD region=us-east-1 version=${env.BRANCH_NAME}-${env.BUILD_ID}"
 
           }
 
-
+}
         }
 
 }
@@ -69,9 +93,12 @@ usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
 stage ('Cleanup') {
     steps{
         script{
-        sh "docker rmi shubhashish/codegladiator:latest"
-        sh "docker rmi shubhashish/codegladiator:${env.BRANCH_NAME}-${env.BUILD_ID}"
-        sh "docker rmi helloworld"
+        def full_name = env.JOB_NAME.split('/')
+        def job_name = full_name[0]
+
+        sh "docker rmi shubhashish/${job_name}:latest"
+        sh "docker rmi shubhashish/${job_name}:${env.BRANCH_NAME}-${env.BUILD_ID}"
+        sh "docker rmi ${job_name}:${env.BRANCH_NAME}"
 
         }
 
