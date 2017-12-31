@@ -80,11 +80,12 @@ stage ('Deploy') {
         steps {
             script{
             def deploy_to
-            sh "echo hello"
-            if ( env.BRANCH_NAME == 'master'){
+
+            if ( ${env.BRANCH_NAME} == 'master'){
                 deploy_to = "production"
             }else {
-                deploy_to = ${env.BRANCH_NAME}
+
+                deploy_to = "${env.BRANCH_NAME}"
             }
             sh "echo {deploy_to}"
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'aws_id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
