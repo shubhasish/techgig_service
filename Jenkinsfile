@@ -12,7 +12,7 @@ stages {
             HELLO = "WORLD"
             }
             sh "echo ${env.JOB_NAME}"
-            sh "docker build -t helloworld:${env.BRANCH_NAME} ."
+
 
             }
         }
