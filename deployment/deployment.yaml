@@ -3,6 +3,7 @@ Description: >
 
 Parameters: 
 
+
         
     Cluster:
         Description: Please provide the ECS Cluster ID that this service should run on
@@ -13,6 +14,7 @@ Parameters:
         Description: How many instances of this task should we run across our cluster?
         Type: Number
         Default: 1
+
 
     Application:
         Description: Name of the application
@@ -79,7 +81,8 @@ Resources:
         Type: "AWS::Logs::LogGroup"
         Properties:
             RetentionInDays: 1
-            LogGroupName: "ECS"
+            LogGroupName:
+                Fn::Sub: "ECS-${Cluster}"
 
     TargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
