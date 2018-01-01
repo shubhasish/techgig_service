@@ -17,7 +17,7 @@ Parameters:
     Application:
         Description: Name of the application
         Type: String
-        Default: "helloWorld"
+        Default: "helloworld"
     Version:
         Description: Name of the image
         Type: String
@@ -58,7 +58,7 @@ Resources:
                     Ref: Application
                   Essential: true
                   Image:
-                    Fn::Sub: "shubhashish/codegladiator:${Version}"
+                    Fn::Sub: "shubhashish/${Application}:${Version}"
                   MemoryReservation: 512
                   Memory: 1024
                   Cpu: 0
