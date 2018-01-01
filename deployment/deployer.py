@@ -84,6 +84,7 @@ class client:
 
 ### Input
 
+
 arguments = sys.argv
 dict = {}
 for x in range(1,len(arguments)):

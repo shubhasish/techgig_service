@@ -3,10 +3,7 @@ Description: >
 
 Parameters: 
 
-    VPC:
-        Description: The VPC that the ECS cluster is deployed to
-        Type: AWS::EC2::VPC::Id
-        Default: "vpc-1c664064"
+
         
     Cluster:
         Description: Please provide the ECS Cluster ID that this service should run on
@@ -18,15 +15,11 @@ Parameters:
         Type: Number
         Default: 1
 
-    Listener:
-        Description: The Application Load Balancer listener to register with
-        Type: String
-        Default: "arn:aws:elasticloadbalancing:us-east-1:266394801394:listener/app/staging/10eb6df9e460abd0/6658634353a2881e"
 
     Application:
         Description: Name of the application
         Type: String
-        Default: "helloWorld"
+        Default: "helloworld"
     Version:
         Description: Name of the image
         Type: String
@@ -67,7 +60,7 @@ Resources:
                     Ref: Application
                   Essential: true
                   Image:
-                    Fn::Sub: "shubhashish/codegladiator:${Version}"
+                    Fn::Sub: "shubhashish/${Application}:${Version}"
                   MemoryReservation: 512
                   Memory: 1024
                   Cpu: 0
@@ -95,7 +88,8 @@ Resources:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
         Properties:
             VpcId:
-               Ref: VPC
+               Fn::ImportValue:
+                   Fn::Sub: "${Cluster}-VPC"
             Port: 80
             Protocol: HTTP
             Matcher: 
@@ -110,7 +104,8 @@ Resources:
         Type: AWS::ElasticLoadBalancingV2::ListenerRule
         Properties:
             ListenerArn:
-               Ref: Listener
+               Fn::ImportValue:
+                   Fn::Sub: '${Cluster}-Listner'
             Priority: 2
             Conditions:
                 - Field: path-pattern
